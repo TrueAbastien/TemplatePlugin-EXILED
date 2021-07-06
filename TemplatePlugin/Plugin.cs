@@ -1,5 +1,6 @@
 ﻿using CommandSystem;
 using Exiled.API.Features;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,13 +15,16 @@ namespace TemplatePlugin
     {
         public override string Name { get; } = "Sample Plugin";
         public override string Prefix { get; } = "smp";
-        public override string Author { get; } = "Your Name";
+        public override string Author { get; } = "x";
 
         private Handlers.Player player;
         private Handlers.Server server;
 
         private Data data;
         private Methods methods;
+
+        private static int incrementalCounter;
+        public Harmony harmony { get; private set; }
 
         public static Plugin Current { get; internal set; }
         public static Data Data { get => Current.data; }
@@ -37,6 +41,9 @@ namespace TemplatePlugin
             player = new Handlers.Player();
             server = new Handlers.Server();
 
+            harmony = new Harmony($"{ Author }.{ Prefix }.{ ++incrementalCounter }");
+            harmony.PatchAll();
+
             RegisterEvents();
         }
         public override void OnDisabled()
@@ -44,6 +51,9 @@ namespace TemplatePlugin
             base.OnDisabled();
 
             UnregisterEvents();
+
+            harmony.UnpatchAll(harmony.Id);
+            harmony = null;
 
             player = null;
             server = null;
