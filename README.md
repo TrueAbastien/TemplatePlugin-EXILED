@@ -1,0 +1,3 @@
+# Template Plugin for EXILED2
+
+It is was it is...
